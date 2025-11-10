@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0a0e27;
             min-height: 100vh;
             padding: 20px;
         }
@@ -21,33 +21,35 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
+            background: #1a1f3a;
             border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             overflow: hidden;
+            border: 1px solid #2d3355;
         }
 
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 25px 30px;
             text-align: center;
+            border-bottom: 2px solid #667eea;
         }
 
         .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 8px;
         }
 
         .header p {
-            font-size: 16px;
-            opacity: 0.9;
+            font-size: 15px;
+            opacity: 0.95;
         }
 
         .input-section {
             padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
+            background: #252b4a;
+            border-bottom: 2px solid #2d3355;
         }
 
         .input-group {
@@ -57,7 +59,7 @@
         .input-label {
             font-size: 18px;
             font-weight: 600;
-            color: #667eea;
+            color: #8b9dff;
             margin-bottom: 12px;
             display: block;
         }
@@ -70,7 +72,7 @@
         .file-input-label {
             display: block;
             padding: 40px;
-            background: white;
+            background: #1a1f3a;
             border: 3px dashed #667eea;
             border-radius: 8px;
             text-align: center;
@@ -79,13 +81,13 @@
         }
 
         .file-input-label:hover {
-            border-color: #764ba2;
-            background: #f8f9fa;
+            border-color: #8b9dff;
+            background: #252b4a;
         }
 
         .file-input-label span {
             font-size: 18px;
-            color: #667eea;
+            color: #8b9dff;
             font-weight: 600;
         }
 
@@ -97,16 +99,23 @@
             width: 100%;
             min-height: 200px;
             padding: 15px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #2d3355;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
             font-size: 14px;
             resize: vertical;
+            background: #1a1f3a;
+            color: #e0e6ff;
         }
 
         textarea:focus {
             outline: none;
             border-color: #667eea;
+            background: #1f2440;
+        }
+
+        textarea::placeholder {
+            color: #5a6189;
         }
 
         .parse-button {
@@ -124,13 +133,56 @@
 
         .parse-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         .stats {
             padding: 30px;
-            background: white;
-            border-bottom: 2px solid #e9ecef;
+            background: #1a1f3a;
+            border-bottom: 2px solid #2d3355;
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 30px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .view-button {
+            padding: 16px 32px;
+            border: 2px solid #667eea;
+            background: #252b4a;
+            color: #8b9dff;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 180px;
+        }
+
+        .view-button:hover {
+            background: #2d3355;
+            border-color: #8b9dff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .view-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
         }
 
         .stats-grid {
@@ -145,6 +197,7 @@
             padding: 20px;
             border-radius: 8px;
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .stat-number {
@@ -155,7 +208,7 @@
 
         .stat-label {
             font-size: 14px;
-            opacity: 0.9;
+            opacity: 0.95;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -164,19 +217,222 @@
             padding: 30px;
             max-height: 800px;
             overflow-y: auto;
+            background: #1a1f3a;
+        }
+
+        .chat-view {
+            display: block;
+        }
+
+        .json-view {
+            display: none;
+        }
+
+        .chat-message {
+            margin-bottom: 25px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message-assistant {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .message-user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-assistant .message-bubble {
+            background: #252b4a;
+            color: #e0e6ff;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #2d3355;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .message-user .message-header {
+            justify-content: flex-end;
+        }
+
+        .message-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .message-user .message-icon {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .message-assistant .message-icon {
+            background: #667eea;
+            color: white;
+        }
+
+        .message-content {
+            font-size: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .message-timestamp {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 8px;
+        }
+
+        .tool-call-container {
+            margin: 15px 0;
+            padding: 15px;
+            background: #2d2418;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+        }
+
+        .tool-call-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #ffd54f;
+        }
+
+        .tool-call-icon {
+            background: #ffc107;
+            color: #1a1f3a;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .tool-call-name {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .tool-call-content {
+            background: #1a1f3a;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #c9d1d9;
+            border: 1px solid #2d3355;
+        }
+
+        .tool-result-container {
+            margin: 15px 0;
+            padding: 15px;
+            background: #1a2832;
+            border-left: 4px solid #17a2b8;
+            border-radius: 8px;
+        }
+
+        .tool-result-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #4dd0e1;
+        }
+
+        .tool-result-icon {
+            background: #17a2b8;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .tool-result-content {
+            background: #1a1f3a;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #c9d1d9;
+            border: 1px solid #2d3355;
+        }
+
+        .expand-button {
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #8b9dff;
+        }
+
+        .expand-button:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: #667eea;
         }
 
         .event-card {
-            background: #f8f9fa;
+            background: #252b4a;
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
             border-left: 4px solid #667eea;
             transition: all 0.3s;
+            border: 1px solid #2d3355;
         }
 
         .event-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
             transform: translateX(5px);
         }
 
@@ -186,7 +442,7 @@
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 2px solid #2d3355;
         }
 
         .event-number {
@@ -209,8 +465,8 @@
         }
 
         .json-display {
-            background: #2d2d2d;
-            color: #f8f8f2;
+            background: #0d1117;
+            color: #c9d1d9;
             padding: 15px;
             border-radius: 6px;
             font-family: 'Courier New', monospace;
@@ -219,57 +475,61 @@
             line-height: 1.6;
             white-space: pre;
             margin: 0;
+            border: 1px solid #2d3355;
         }
 
         .json-key {
-            color: #66d9ef;
+            color: #79c0ff;
         }
 
         .json-string {
-            color: #a6e22e;
+            color: #a5d6ff;
         }
 
         .json-number {
-            color: #ae81ff;
+            color: #d2a8ff;
         }
 
         .json-boolean {
-            color: #fd971f;
+            color: #ffa657;
         }
 
         .json-null {
-            color: #f92672;
+            color: #ff7b72;
         }
 
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #6c757d;
+            color: #8b9dff;
         }
 
         .empty-state svg {
             width: 100px;
             height: 100px;
             margin-bottom: 20px;
-            opacity: 0.3;
+            opacity: 0.4;
+            stroke: #8b9dff;
         }
 
         .empty-state h3 {
             font-size: 24px;
             margin-bottom: 10px;
+            color: #e0e6ff;
         }
 
         .empty-state p {
             font-size: 16px;
+            color: #8b9dff;
         }
 
         .error-message {
-            background: #f8d7da;
-            color: #721c24;
+            background: #4a1d1d;
+            color: #ff7b72;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #f5c6cb;
+            border-left: 4px solid #ff7b72;
         }
 
         ::-webkit-scrollbar {
@@ -277,7 +537,7 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #1a1f3a;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -316,38 +576,70 @@
     </div>
 
     <div class="stats" id="stats" style="display: none;">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalEvents">0</div>
-                <div class="stat-label">Total Events</div>
+        <div class="stats-header">
+            <div class="stats-grid" style="flex: 1;">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEvents">0</div>
+                    <div class="stat-label">Total Events</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="userEvents">0</div>
+                    <div class="stat-label">User Events</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="assistantEvents">0</div>
+                    <div class="stat-label">Assistant Events</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="otherEvents">0</div>
+                    <div class="stat-label">Other Events</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="userEvents">0</div>
-                <div class="stat-label">User Events</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="assistantEvents">0</div>
-                <div class="stat-label">Assistant Events</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="otherEvents">0</div>
-                <div class="stat-label">Other Events</div>
+            <div class="view-toggle">
+                <button class="view-button active" onclick="switchView('chat')">💬 Chat View</button>
+                <button class="view-button" onclick="switchView('json')">📄 JSON View</button>
             </div>
         </div>
     </div>
 
     <div class="results" id="results">
-        <div class="empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h3>No Data Loaded</h3>
-            <p>Upload a file or paste JSONL content to get started</p>
+        <div id="jsonViewContainer" class="json-view">
+            <div class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h3>No Data Loaded</h3>
+                <p>Upload a file or paste JSONL content to get started</p>
+            </div>
         </div>
+        <div id="chatViewContainer" class="chat-view"></div>
     </div>
 </div>
 
 <script>
+    let currentEvents = [];
+    let currentView = 'chat';
+
+    function switchView(view) {
+        currentView = view;
+
+        document.querySelectorAll('.view-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        const jsonView = document.getElementById('jsonViewContainer');
+        const chatView = document.getElementById('chatViewContainer');
+
+        if (view === 'json') {
+            jsonView.style.display = 'block';
+            chatView.style.display = 'none';
+        } else {
+            jsonView.style.display = 'none';
+            chatView.style.display = 'block';
+        }
+    }
+
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -370,10 +662,10 @@
     }
 
     function parseJSONL(content) {
-        const resultsDiv = document.getElementById('results');
+        const jsonViewContainer = document.getElementById('jsonViewContainer');
         const statsDiv = document.getElementById('stats');
 
-        resultsDiv.innerHTML = '';
+        jsonViewContainer.innerHTML = '';
 
         const lines = content.trim().split('\n');
         const events = [];
@@ -395,7 +687,7 @@
         }
 
         if (events.length === 0) {
-            resultsDiv.innerHTML = `
+            jsonViewContainer.innerHTML = `
                     <div class="empty-state">
                         <h3>No Valid JSON Found</h3>
                         <p>Could not parse any valid JSON objects from the input</p>
@@ -405,8 +697,10 @@
             return;
         }
 
+        currentEvents = events;
         updateStats(events);
         displayEvents(events);
+        renderChatView(events);
         statsDiv.style.display = 'block';
     }
 
@@ -434,7 +728,7 @@
     }
 
     function displayEvents(events) {
-        const resultsDiv = document.getElementById('results');
+        const jsonViewContainer = document.getElementById('jsonViewContainer');
 
         events.forEach((event, index) => {
             const card = document.createElement('div');
@@ -450,8 +744,130 @@
                     <pre class="json-display">${syntaxHighlight(event)}</pre>
                 `;
 
-            resultsDiv.appendChild(card);
+            jsonViewContainer.appendChild(card);
         });
+    }
+
+    function renderChatView(events) {
+        const chatViewContainer = document.getElementById('chatViewContainer');
+        chatViewContainer.innerHTML = '';
+
+        if (events.length === 0) {
+            chatViewContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Messages</h3>
+                        <p>No conversation data to display</p>
+                    </div>
+                `;
+            return;
+        }
+
+        events.forEach((event, index) => {
+            const type = event.type || (event.message && event.message.role);
+
+            if (type === 'user' || type === 'assistant') {
+                const messageDiv = createChatMessage(event, index);
+                chatViewContainer.appendChild(messageDiv);
+            }
+        });
+    }
+
+    function createChatMessage(event, index) {
+        const type = event.type || event.message.role;
+        const message = event.message || {};
+        const content = message.content || event.content || '';
+        const timestamp = event.timestamp || '';
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message message-${type}`;
+
+        let contentHtml = '';
+
+        if (Array.isArray(content)) {
+            content.forEach(item => {
+                if (item.type === 'text') {
+                    contentHtml += `<div class="message-content">${escapeHtml(item.text)}</div>`;
+                } else if (item.type === 'tool_use') {
+                    contentHtml += createToolCallHtml(item);
+                } else if (item.type === 'tool_result') {
+                    contentHtml += createToolResultHtml(item);
+                }
+            });
+        } else if (typeof content === 'string') {
+            contentHtml = `<div class="message-content">${escapeHtml(content)}</div>`;
+        } else if (typeof content === 'object') {
+            contentHtml = `<div class="message-content">${escapeHtml(JSON.stringify(content, null, 2))}</div>`;
+        }
+
+        const timeStr = timestamp ? new Date(timestamp).toLocaleString() : '';
+
+        messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    <div class="message-header">
+                        <span class="message-icon">${type === 'user' ? '👤' : '🤖'}</span>
+                        <span>${type === 'user' ? 'User' : 'Assistant'}</span>
+                    </div>
+                    ${contentHtml}
+                    ${timeStr ? `<div class="message-timestamp">${timeStr}</div>` : ''}
+                </div>
+            `;
+
+        return messageDiv;
+    }
+
+    function createToolCallHtml(toolUse) {
+        const inputStr = JSON.stringify(toolUse.input || {}, null, 2);
+        const shortInput = inputStr.length > 150 ? inputStr.substring(0, 150) + '...' : inputStr;
+        const id = 'tool-' + Math.random().toString(36).substr(2, 9);
+
+        return `
+                <div class="tool-call-container">
+                    <div class="tool-call-header">
+                        <span class="tool-call-icon">🔧</span>
+                        <span class="tool-call-name">${escapeHtml(toolUse.name || 'Unknown Tool')}</span>
+                    </div>
+                    <div class="tool-call-content" id="${id}">${escapeHtml(shortInput)}</div>
+                    ${inputStr.length > 150 ? `<button class="expand-button" onclick="toggleExpand('${id}', \`${escapeHtml(inputStr).replace(/`/g, '\\`')}\`, \`${escapeHtml(shortInput).replace(/`/g, '\\`')}\`)">Show More</button>` : ''}
+                </div>
+            `;
+    }
+
+    function createToolResultHtml(toolResult) {
+        const contentStr = typeof toolResult.content === 'string'
+            ? toolResult.content
+            : JSON.stringify(toolResult.content, null, 2);
+        const shortContent = contentStr.length > 150 ? contentStr.substring(0, 150) + '...' : contentStr;
+        const id = 'result-' + Math.random().toString(36).substr(2, 9);
+
+        return `
+                <div class="tool-result-container">
+                    <div class="tool-result-header">
+                        <span class="tool-result-icon">✓</span>
+                        <span>Tool Result</span>
+                    </div>
+                    <div class="tool-result-content" id="${id}">${escapeHtml(shortContent)}</div>
+                    ${contentStr.length > 150 ? `<button class="expand-button" onclick="toggleExpand('${id}', \`${escapeHtml(contentStr).replace(/`/g, '\\`')}\`, \`${escapeHtml(shortContent).replace(/`/g, '\\`')}\`)">Show More</button>` : ''}
+                </div>
+            `;
+    }
+
+    function toggleExpand(id, fullContent, shortContent) {
+        const element = document.getElementById(id);
+        const button = element.nextElementSibling;
+
+        if (element.textContent.includes('...')) {
+            element.textContent = fullContent;
+            button.textContent = 'Show Less';
+        } else {
+            element.textContent = shortContent;
+            button.textContent = 'Show More';
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     function syntaxHighlight(obj) {
