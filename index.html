@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSONL Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -118,8 +119,14 @@
             color: #5a6189;
         }
 
-        .parse-button {
+        .button-row {
+            display: flex;
+            gap: 12px;
             margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .parse-button {
             padding: 12px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -136,6 +143,36 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
+        .share-button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.5);
+        }
+
+        .share-button.visible {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .share-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .stats {
             padding: 30px;
             background: #1a1f3a;
@@ -148,6 +185,7 @@
             align-items: center;
             margin-bottom: 20px;
             gap: 30px;
+            flex-wrap: wrap;
         }
 
         .view-toggle {
@@ -532,6 +570,142 @@
             border-left: 4px solid #ff7b72;
         }
 
+        .success-message {
+            background: #1a3a2a;
+            color: #38ef7d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #38ef7d;
+        }
+
+        .shared-banner {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .shared-banner.visible {
+            display: block;
+        }
+
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .share-modal.visible {
+            display: flex;
+        }
+
+        .share-modal-content {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid #2d3355;
+        }
+
+        .share-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .share-modal-header h2 {
+            color: #e0e6ff;
+            font-size: 22px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #8b9dff;
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: #ff7b72;
+        }
+
+        .share-url-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .share-url-input {
+            flex: 1;
+            padding: 12px 15px;
+            background: #0d1117;
+            border: 2px solid #2d3355;
+            border-radius: 8px;
+            color: #e0e6ff;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .share-url-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .copy-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .copy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .share-info {
+            color: #8b9dff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .share-info strong {
+            color: #ffd54f;
+        }
+
+        .url-size-warning {
+            color: #ffa657;
+            font-size: 13px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #2d2418;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .url-size-warning.visible {
+            display: block;
+        }
+
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -552,6 +726,10 @@
 </head>
 <body>
 <div class="container">
+    <div class="shared-banner" id="sharedBanner">
+        📤 Viewing shared analysis — data loaded from URL
+    </div>
+
     <div class="header">
         <h1>JSONL Viewer</h1>
         <p>Parse and beautify your JSONL files or text</p>
@@ -561,7 +739,12 @@
         <div class="input-group">
             <label class="input-label">Paste JSONL Text</label>
             <textarea id="jsonlText" placeholder="Paste your JSONL content here..."></textarea>
-            <button class="parse-button" onclick="parseTextInput()">Parse JSONL</button>
+            <div class="button-row">
+                <button class="parse-button" onclick="parseTextInput()">Parse JSONL</button>
+                <button class="share-button" id="shareButton" onclick="openShareModal()">
+                    <span>🔗</span> Share Analysis
+                </button>
+            </div>
         </div>
 
         <div class="input-group">
@@ -616,9 +799,113 @@
     </div>
 </div>
 
+<!-- Share Modal -->
+<div class="share-modal" id="shareModal">
+    <div class="share-modal-content">
+        <div class="share-modal-header">
+            <h2>🔗 Share This Analysis</h2>
+            <button class="close-modal" onclick="closeShareModal()">&times;</button>
+        </div>
+        <div class="share-url-container">
+            <input type="text" class="share-url-input" id="shareUrlInput" readonly>
+            <button class="copy-button" onclick="copyShareUrl()">Copy Link</button>
+        </div>
+        <div class="url-size-warning" id="urlSizeWarning">
+            ⚠️ Large data detected. URL might be too long for some browsers or platforms. Consider sharing smaller datasets.
+        </div>
+        <div class="share-info">
+            <p>This link contains all your JSONL data encoded in the URL. Anyone with this link can view the exact same analysis.</p>
+            <p style="margin-top: 10px;"><strong>No server required</strong> — data is compressed and stored entirely in the URL.</p>
+        </div>
+    </div>
+</div>
+
 <script>
     let currentEvents = [];
     let currentView = 'chat';
+    let rawJsonlContent = '';
+
+    // Check for shared data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFromUrl();
+    });
+
+    function loadFromUrl() {
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#data=')) {
+            try {
+                const compressedData = hash.substring(6);
+                const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
+                if (decompressed) {
+                    document.getElementById('jsonlText').value = decompressed;
+                    document.getElementById('sharedBanner').classList.add('visible');
+                    parseJSONL(decompressed);
+                    rawJsonlContent = decompressed;
+                }
+            } catch (e) {
+                console.error('Failed to load shared data:', e);
+                showError('Failed to load shared data from URL');
+            }
+        }
+    }
+
+    function generateShareUrl() {
+        if (!rawJsonlContent) {
+            return null;
+        }
+        const compressed = LZString.compressToEncodedURIComponent(rawJsonlContent);
+        const baseUrl = window.location.href.split('#')[0];
+        return baseUrl + '#data=' + compressed;
+    }
+
+    function openShareModal() {
+        if (!rawJsonlContent || currentEvents.length === 0) {
+            showError('Parse some JSONL data first before sharing');
+            return;
+        }
+
+        const shareUrl = generateShareUrl();
+        if (!shareUrl) {
+            showError('Failed to generate share URL');
+            return;
+        }
+
+        document.getElementById('shareUrlInput').value = shareUrl;
+        document.getElementById('shareModal').classList.add('visible');
+
+        // Check URL size and show warning if too large
+        const urlSizeWarning = document.getElementById('urlSizeWarning');
+        if (shareUrl.length > 8000) {
+            urlSizeWarning.classList.add('visible');
+        } else {
+            urlSizeWarning.classList.remove('visible');
+        }
+    }
+
+    function closeShareModal() {
+        document.getElementById('shareModal').classList.remove('visible');
+    }
+
+    function copyShareUrl() {
+        const input = document.getElementById('shareUrlInput');
+        input.select();
+        input.setSelectionRange(0, 99999);
+
+        navigator.clipboard.writeText(input.value).then(() => {
+            showSuccess('Link copied to clipboard!');
+        }).catch(() => {
+            // Fallback for older browsers
+            document.execCommand('copy');
+            showSuccess('Link copied to clipboard!');
+        });
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('shareModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeShareModal();
+        }
+    });
 
     function switchView(view) {
         currentView = view;
@@ -647,6 +934,8 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             const content = e.target.result;
+            document.getElementById('jsonlText').value = content;
+            rawJsonlContent = content;
             parseJSONL(content);
         };
         reader.readAsText(file);
@@ -658,12 +947,14 @@
             showError('Please paste some JSONL content first');
             return;
         }
+        rawJsonlContent = text;
         parseJSONL(text);
     }
 
     function parseJSONL(content) {
         const jsonViewContainer = document.getElementById('jsonViewContainer');
         const statsDiv = document.getElementById('stats');
+        const shareButton = document.getElementById('shareButton');
 
         jsonViewContainer.innerHTML = '';
 
@@ -694,6 +985,7 @@
                     </div>
                 `;
             statsDiv.style.display = 'none';
+            shareButton.classList.remove('visible');
             return;
         }
 
@@ -702,6 +994,13 @@
         displayEvents(events);
         renderChatView(events);
         statsDiv.style.display = 'block';
+        shareButton.classList.add('visible');
+
+        // Update URL without reloading (for bookmarking)
+        const shareUrl = generateShareUrl();
+        if (shareUrl && shareUrl.length < 100000) {
+            history.replaceState(null, '', shareUrl);
+        }
     }
 
     function updateStats(events) {
@@ -904,6 +1203,18 @@
         setTimeout(() => {
             errorDiv.remove();
         }, 5000);
+    }
+
+    function showSuccess(message) {
+        const resultsDiv = document.getElementById('results');
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
+        successDiv.textContent = message;
+        resultsDiv.insertBefore(successDiv, resultsDiv.firstChild);
+
+        setTimeout(() => {
+            successDiv.remove();
+        }, 3000);
     }
 </script>
 </body>
